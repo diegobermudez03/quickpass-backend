@@ -29,7 +29,7 @@ func (bc *BookingsController) GetAll(c echo.Context) error {
 	}
 
 	type GetAllResponse struct {
-		Bookings []*entities.Booking `json:"bookings"`
+		Bookings []*entities.Occasion `json:"ocassions"`
 	}
 
 	return c.JSON(http.StatusOK, GetAllResponse{Bookings: bookings})

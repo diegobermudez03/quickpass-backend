@@ -13,6 +13,7 @@ import (
 	"github.com/foxinuni/quickpass-backend/internal/domain/entities"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/redis/go-redis/v9"
+	"github.com/rs/zerolog/log"
 )
 
 var (
@@ -20,8 +21,8 @@ var (
 	ErrServerError		= errors.New("server error with verification")
 	ErrInvalidToken       = errors.New("invalid token")
 	ErrSessionDisabled    = errors.New("session is disabled")
-	ErrExpiredCode 		= errors.New("code has expired")
-	ErrIncorrectCode	= errors.New("code is incorrect")
+	ErrExpiredCode        = errors.New("code has expired")
+	ErrIncorrectCode      = errors.New("code is incorrect")
 )
 
 type WaitSession struct{
@@ -41,6 +42,7 @@ type AuthService interface {
 
 type JwtAuthServiceOptions interface {
 	GetJwtSecret() string
+	GetCacheURL() string
 }
 
 type JwtAuthService struct {
@@ -51,19 +53,23 @@ type JwtAuthService struct {
 	emailService EmailService
 }
 
-func NewJwtAuthService(options JwtAuthServiceOptions, userRepo repo.UserRepository, sessionRepo repo.SessionRepository, emailService EmailService) AuthService {
-	redisClient := redis.NewClient(&redis.Options{
-        Addr:     "localhost:6379",
-        Password: "", // no password set
-        DB:       0,  // use default DB
-    })
+func NewJwtAuthService(options JwtAuthServiceOptions, userRepo repo.UserRepository, sessionRepo repo.SessionRepository, emailService EmailService) (AuthService, error) {
+	redisOpts, err := redis.ParseURL(options.GetCacheURL())
+	if err != nil {
+		return nil, err
+	}
+	redisClient := redis.NewClient(redisOpts)
+	if err := redisClient.Ping(context.Background()).Err(); err != nil {
+		log.Warn().Err(err).Msg("could not connect to redis!")
+		return nil, err
+	}
 	return &JwtAuthService{
 		userRepo:    userRepo,
 		sessionRepo: sessionRepo,
 		options:     options,
 		redisClient: redisClient,
 		emailService: emailService,
-	}
+	}, nil
 }
 
 func (a *JwtAuthService) Login(email, number, model string) (error) {

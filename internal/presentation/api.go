@@ -64,13 +64,13 @@ func (api *QuickpassAPI) Listen() error {
 	// Create a new Echo instance
 	app := echo.New()
 
+	// Allow all origins for CORS
 	app.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost", "http://127.0.0.1"}, // Allow specific base origins
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPatch, http.MethodDelete},
 		AllowOriginFunc: func(origin string) (bool, error) {
-			// Allow any localhost or 127.0.0.1 with any port
-			return origin == "http://localhost" || origin == "http://127.0.0.1" || isLocalhostWithPort(origin), nil
+			return true, nil
 		},
-		AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodDelete},
 	}))
 
 	// Hide the banner and port
@@ -120,8 +120,4 @@ func (cv *CustomValidator) Validate(dto interface{}) error {
 	}
 
 	return nil
-}
-
-func isLocalhostWithPort(origin string) bool {
-	return len(origin) >= 17 && origin[:17] == "http://localhost:" || len(origin) >= 18 && origin[:18] == "http://127.0.0.1:"
 }

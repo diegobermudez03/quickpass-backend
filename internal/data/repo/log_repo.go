@@ -58,9 +58,16 @@ func (r *StoreLogRepository) NewAction(occasionID int) (bool, error) {
 }
 
 func (r * StoreLogRepository) GetLogs(eventId *int, bookingId *int) ([]*entities.LogHistory, error){
+	var bookingFilter *bool
+
+	if bookingId != nil {
+		value := false
+		bookingFilter = &value
+	}
+
 	ocassions, err:=r.occasionStore.GetAll(context.Background(), stores.OccasionFilter{
 		EventID: eventId,
-		BookingID: bookingId,
+		TypeOccasion: bookingFilter,
 	})
 
 	if err != nil {

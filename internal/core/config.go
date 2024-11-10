@@ -10,6 +10,7 @@ type ApplicationConfig struct {
 	ListenAddress    string `env:"LISTEN_ADDRESS" default:":3000"`
 	MigrationsSource string `env:"MIGRATIONS_SRC" default:"file://migrations"`
 	DatabaseURL      string `env:"DATABASE_URL" required:"true"`
+	CacheURL         string `env:"CACHE_URL" required:"true"`
 	JwtSecret        string `env:"JWT_SECRET" required:"true"`
 	SendgridEmail    string `env:"SENDGRID_EMAIL" required:"true"`
 	SendgridAPIKey   string `env:"SENDGRID_API_KEY" required:"true"`
@@ -43,6 +44,10 @@ func (c *ApplicationConfig) GetMigrationsSource() string {
 
 func (c *ApplicationConfig) GetDatabaseURL() string {
 	return c.DatabaseURL
+}
+
+func (c *ApplicationConfig) GetCacheURL() string {
+	return c.CacheURL
 }
 
 // --- JwtOptions implementation --- //

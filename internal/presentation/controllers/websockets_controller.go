@@ -52,7 +52,7 @@ func (sc *WebSocketsController) NewEventLog(occasionId int) {
 }
 
 func (sc *WebSocketsController) NewBookingLog(occasionId int) {
-	log, bookingId, _, err := sc.actionsService.GetLastLog(occasionId)
+	log, _, bookingId, err := sc.actionsService.GetLastLog(occasionId)
 	if err != nil {
 		return
 	}

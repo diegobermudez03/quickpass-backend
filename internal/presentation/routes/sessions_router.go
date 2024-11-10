@@ -17,6 +17,6 @@ func NewSessionsRouter(sessionController *controllers.SessionController) *Sessio
 
 func (r *SessionsRouter) RegisterRoutes(echo *echo.Echo) {
 	echo.GET("/sessions", r.sessionController.GetAll)
-	echo.PATCH("/sessions/:id", r.sessionController.Update)
+	echo.POST("/sessions/:id", r.sessionController.Update)
 	echo.GET("/sessions/check/:token", r.sessionController.CheckSession)
 }

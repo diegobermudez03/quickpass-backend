@@ -9,7 +9,7 @@ import (
 )
 
 type BookingsService interface {
-	GetAllBookings() ([]*entities.Booking, error)
+	GetAllBookings() ([]*entities.Occasion, error)
 	GetBookingsForUser(user *entities.User) ([]*entities.Occasion, error)
 	sendInvitation(occasionIds []int) (int, error)
 	InviteOccasion(occasionId int) (int, error)
@@ -39,15 +39,22 @@ func NewRepoBookingsService(
 	}
 }
 
-func (s *RepoBookingsService) GetAllBookings() ([]*entities.Booking, error) {
+func (s *RepoBookingsService) GetAllBookings() ([]*entities.Occasion, error) {
 	// occasion for type false means bookings
-	bookings, err := s.bookingRepo.GetAll()
+	bookings, err := s.occasionRepo.GetAll()
+
 	if err != nil {
 		return nil, err
 	}
 
+	var result []*entities.Occasion
+	for _, item := range bookings {
+		if item.Booking != nil {
+			result = append(result, item)
+		}
+	}
 	// if there was no error then it returns the bookings
-	return bookings, nil
+	return result, nil
 }
 
 func (s *RepoBookingsService) GetBookingsForUser(user *entities.User) ([]*entities.Occasion, error) {

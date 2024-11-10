@@ -50,14 +50,13 @@ func (sc *SessionController) Update(c echo.Context) error {
 	if err := c.Bind(&sessionDTO); err != nil {
 		return err
 	}
-
 	// Validate DTO
 	if err := c.Validate(&sessionDTO); err != nil {
 		return err
 	}
 
 	// Call the service
-	if err := sc.sessionService.EnableSession(id, sessionDTO.Enabled); err != nil {
+	if err := sc.sessionService.EnableSession(id, *sessionDTO.Enabled); err != nil {
 		return err
 	}
 

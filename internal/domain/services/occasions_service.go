@@ -55,11 +55,11 @@ func (s *RepoOccassionsService) GetOccasionsForUser(user *entities.User, active 
 		var beforeEnd bool
 		if occasion.Event != nil {
 			afterStart = time.Now().After(occasion.Event.GetStartDate())
-			beforeEnd = occasion.Event.GetStartDate().Before(time.Now())
+			beforeEnd = time.Now().Before(occasion.Event.GetEndDate())
 		}
 		if occasion.Booking != nil {
 			afterStart = time.Now().After(occasion.Booking.GetEntryDate())
-			beforeEnd = occasion.Booking.GetExitDate().Before(time.Now())
+			beforeEnd =  time.Now().Before(occasion.Booking.GetExitDate()) 
 		}
 		if afterStart && beforeEnd {
 			filteredOccasions = append(filteredOccasions, occasion)

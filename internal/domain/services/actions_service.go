@@ -40,11 +40,11 @@ func (as *RepoActionsService) NewAction(user *entities.User, occasionID int) (bo
 	var beforeEnd bool
 	if occasion.Event != nil {
 		afterStart = time.Now().After(occasion.Event.GetStartDate())
-		beforeEnd = occasion.Event.GetStartDate().Before(time.Now())
+		beforeEnd = time.Now().Before(occasion.Event.GetEndDate())
 	}
 	if occasion.Booking != nil {
 		afterStart = time.Now().After(occasion.Booking.GetEntryDate())
-		beforeEnd = occasion.Booking.GetExitDate().Before(time.Now())
+		beforeEnd =  time.Now().Before(occasion.Booking.GetExitDate()) 
 	}
 	if !(afterStart && beforeEnd) {
 		return false, ErrOccasionNotInCourse

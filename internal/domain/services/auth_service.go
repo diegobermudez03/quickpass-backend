@@ -110,6 +110,7 @@ func (a *JwtAuthService) Login(email, number, model string) (error) {
 		user.Email,
 		"Un dispositivo esta intentando vincularse a su cuenta",
 		fmt.Sprintf("Un dispositivo %q esta intentando vincularse a su cuenta, en caso de ser tu, ingresa el codigo: %d", model, code),
+		false,
 	)
 	if err != nil {
 		return ErrServerError

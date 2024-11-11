@@ -114,7 +114,8 @@ func (s *RepoEventsService) InviteUsers(eventId int, occasionIds []int) (int, er
 			fmt.Sprintf(`
 				Estas cordialmente invitado al evento %q. Este evento se dara en: %q.
 				Recuerda que inicia en %s y finaliza el %s, confirma tu asistencia por medio de nuesra aplicacion!
-			`, eventName, eventAddress, startDate, endDate),
+			`, eventName, eventAddress, startDate.Format("2006-January-02"), endDate.Format("2006-January-02")), 
+			true,
 		)
 		if err != nil {
 			log.Warn().Err(err).Msgf("Error sending email to %q", userEmail)

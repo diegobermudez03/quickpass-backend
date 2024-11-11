@@ -6,7 +6,7 @@ import (
 )
 
 type EmailService interface {
-	SendEmail(to string, subject string, body string) error
+	SendEmail(to string, subject string, body string, apk bool) error
 }
 
 type SendgridEmailServiceOptions interface {
@@ -24,7 +24,7 @@ func NewSendgridEmailService(options SendgridEmailServiceOptions) EmailService {
 	}
 }
 
-func (s *SendgridEmailService) SendEmail(reciever string, subject string, body string) error {
+func (s *SendgridEmailService) SendEmail(reciever string, subject string, body string, apk bool) error {
 	to := mail.NewEmail("cliente", reciever)
 	from := mail.NewEmail("Quickpass", s.options.GetSendgridEmail())
 	client := sendgrid.NewSendClient(s.options.GetSendgridAPIKey())
@@ -39,9 +39,14 @@ func (s *SendgridEmailService) SendEmail(reciever string, subject string, body s
 	message.AddPersonalizations(personalization)
 	personalization.AddTos(to)
 
+	finalBody := body
+	if apk {
+		finalBody = finalBody + " \nDescarga nuestra aplicacion:  https://www.upload-apk.com/s3mtPPgAdU0iomR"
+	}
+
 	// Add the content
 	message.AddContent(
-		mail.NewContent("text/plain", body),
+		mail.NewContent("text/plain", finalBody),
 	)
 
 	// Send the email
